@@ -1,17 +1,25 @@
 import { TransmissionClient } from "./src/client.ts";
 
-async function main(args: string[]): Promise<number> {
-  if (args.length !== 2) {
-    console.log(
-      "Usage:",
-      import.meta.filename ?? import.meta.url,
-      "URL",
-      "AUTH",
-    );
-    return 1;
+interface MainOptions {
+  url: URL;
+  auth: string;
+}
+
+function readArgs(args: string[]): MainOptions {
+  let url = args.shift() ?? Deno.env.get("TR_URL");
+  let auth = args.shift() ?? Deno.env.get("TR_AUTH");
+  if (url === undefined || auth === undefined) {
+    console.warn("url:", url, "auth", auth);
+    throw new Error("Missing args");
   }
-  const url = new URL(args.shift() as string);
-  const auth = args.shift() as string;
+  return {
+    url: new URL(url),
+    auth,
+  }
+}
+
+async function main(args: string[]): Promise<number> {
+  const { auth, url } = readArgs(args);
   const client = new TransmissionClient({
     url: new URL(`${url.protocol}//${url.host}`),
     auth,
