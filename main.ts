@@ -22,6 +22,7 @@ async function main(args: string[]): Promise<number> {
     arguments: undefined,
   });
   console.log([
+    Date.now(),
     res.arguments["cumulative-stats"].downloadedBytes,
     res.arguments["cumulative-stats"].filesAdded,
     res.arguments["cumulative-stats"].secondsActive,
